@@ -12,11 +12,40 @@ function contains(cell) {
   return this.some(c => same(c,cell));
 }
 
-const printCell = (cell, state) => {};
+const printCell = (cell, state) => {
+  return contains.call(state, cell) ? '\u25A3': '\u25A2';
+};
 
-const corners = (state = []) => {};
+const corners = (state = []) => {
+  let minX = 0; let minY = 0; let maxX = 0; let maxY = 0;
+  let xValues = [];
+  let yValues = []; 
+  if (state.length > 0){
+    state.forEach(cell => {
+      xValues.push(cell[0]);
+      yValues.push(cell[1]);
+    });
+    minX = Math.min(...xValues);
+    minY = Math.min(...yValues);
+    maxX = Math.max(...xValues);
+    maxY = Math.max(...yValues);
+  }
+  
+  return {
+    topRight: [maxX, maxY],
+    bottomLeft: [minX, minY]
+    };
+};
 
-const printCells = (state) => {};
+const printCells = (state) => {
+  const corners = corners(state);
+  // directions seem reveresed, but thats compsci logic
+  for (let index = corners.minY; index < corners.maxY; index++){
+    for (let index2 = corners.minX; index2 < corners.maxX; index2++){
+      console.log(printCell([index2, index], state));
+    }
+  }
+};
 
 const getNeighborsOf = ([x, y]) => {};
 
