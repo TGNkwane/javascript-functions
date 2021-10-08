@@ -68,27 +68,27 @@ const willBeAlive = (cell, state) => {
 };
 
 const calculateNext = (state) => {
-  let {topRight, bottomLeft} = corners(state);
+  const {bottomLeft, topRight, } = corners(state); // direction swapped
   let result = [];
-  for (let rows= bottomLeft[1]  - 1 ; rows < topRight[1] + 1; rows++) {
-    for (let cols = bottomLeft[0] - 1; cols < topRight[0] + 1; cols++) {
-      result.push(willBeAlive([cols, rows], state));
+  for (let rows = topRight[1] + 1; rows >= bottomLeft[1] - 1; rows--) {
+    for (let cols = bottomLeft[0] - 1; cols <= topRight[0] + 1; cols++) {
+      result.concat(willBeAlive([cols, rows], state) ? [[cols, rows]] : []);
     }
   }
   return result;
 };
 
 const iterate = (state, iterations) => {
-  let result = state;
+  let result = [state];
   for (let i = 0; i < iterations; i++) {
-    result = calculateNext(result);
+    result.push(calculateNext(result[result.length - 1]));
   }
   return result;
 };
 
 const main = (pattern, iterations) => {
-  let state = seed(...pattern);
-  return printCells(iterate(state, iterations));
+  const results = iterate(startPatterns[pattern], iterations);
+  results.forEach(result => console.log(printCells(result)));
 };
 
 const startPatterns = {
