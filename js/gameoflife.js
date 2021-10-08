@@ -43,10 +43,11 @@ const printCells = (state) => {
   let result = '';
   // directions seem reveresed, but thats compsci logic
   for (let index = topRight[1]; index >= bottomLeft[1]; index--){
+    let row = [];
     for (let index2 = bottomLeft[0]; index2 <= topRight[0]; index2++){
-      result += printCell([index2, index], state) + " ";
+      row.push(printCell([index2, index], state));
     }
-    result += '\n';
+    result += row.join(' ') + '\n';
   }
   return result;
 };
@@ -57,7 +58,7 @@ const getNeighborsOf = ([x, y]) => {
 
 const getLivingNeighbors = (cell, state) => {
   const neighbors = getNeighborsOf(cell);
-  return neighbors.filter(c => contains.call(state, c));
+  return neighbors.filter(c => contains.bind(state)(c));
 };
 
 const willBeAlive = (cell, state) => {
@@ -68,11 +69,11 @@ const willBeAlive = (cell, state) => {
 };
 
 const calculateNext = (state) => {
-  const {bottomLeft, topRight, } = corners(state); // direction swapped
+  const { bottomLeft, topRight } = corners(state); // direction swapped
   let result = [];
   for (let rows = topRight[1] + 1; rows >= bottomLeft[1] - 1; rows--) {
     for (let cols = bottomLeft[0] - 1; cols <= topRight[0] + 1; cols++) {
-      result.concat(willBeAlive([cols, rows], state) ? [[cols, rows]] : []);
+      result = result.concat(willBeAlive([rows, cols], state) ? [[rows, cols]] : []);
     }
   }
   return result;
